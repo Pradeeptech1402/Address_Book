@@ -10,7 +10,8 @@ static Contact dummyContacts[] = {
     {"Frank Miller", "3334445555", "frank@example.com"},
     {"Grace Wilson", "2223334444", "grace@example.com"},
     {"Hannah Clark", "5556667777", "hannah@example.com"},
-    {"Ian Lewis", "8889990000", "ian@example.com"}
+    {"Ian Lewis", "8889990000", "ian@example.com"},
+    {"Pradeep R","0000000000","pradeep@gmail.com"}
 };
 
 void populateAddressBook(AddressBook* addressBook)
