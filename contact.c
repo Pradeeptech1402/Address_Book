@@ -131,15 +131,17 @@ int search(AddressBook* addressBook,char* data,int option){
             count=0;
             for(int j=0;j<addressBook->contactCount;j++){
                 if(strcmp(data,addressBook->contacts[j].name)==0){
-                    return j;
+                    i=j;
                     count++;
                 }
             }
             if(count==0){
                 printf("Name not matched with any contact\n");
+                return i;
             };
             if(count > 1){
                 printf("Found multiple Names. Try search by 'Phone Number' or 'Email'\n");
+                return i;
             }
             if(count==1){
                 return i;
@@ -243,7 +245,8 @@ int searchContact(AddressBook *addressBook)
 {
     int exit=0;
     while(!exit){
-        int option=0;
+    int id=0;
+    int option=0;
     /* Define the logic for search */
     printf("1. Search by Name\n");
     printf("2. Search by Phone Number\n");
@@ -265,24 +268,28 @@ int searchContact(AddressBook *addressBook)
                 printf("Enter the Name: ");
                 scanf(" %49[^\n]",name);
             }while(name_is_invalid(name));
-            print_contact(addressBook,search(addressBook,name,option));
-            return search(addressBook,name,option);
+            print_contact(addressBook,id=search(addressBook,name,option));
+            if(id<0)continue;
+            return id;
         case 2:
             do{
                 printf("Enter the Phone Number: ");
                 scanf(" %19[^\n]",phone);
             }while(search_phone_is_invalid(phone));
-            print_contact(addressBook,search(addressBook,phone,option));
-            return search(addressBook,name,option); 
+            print_contact(addressBook,id=search(addressBook,phone,option));
+            if(id<0)continue;
+            return id; 
         case 3:
             do{
                 printf("Enter the Email: ");
                 scanf(" %49[^\n]",email);
             }while(search_email_is_invalid(email));
-            print_contact(addressBook,search(addressBook,email,option));
-            return search(addressBook,name,option); 
+            print_contact(addressBook,id=search(addressBook,email,option));
+            if(id<0)continue;
+            return id; 
         case 4:
             exit = 1;
+            return -1;
             break;
         default:
             printf("Invalid Option\n");
@@ -294,9 +301,13 @@ int searchContact(AddressBook *addressBook)
 void editContact(AddressBook *addressBook)
 {
 	/* Define the logic for Editcontact */
-    int id = searchContact(addressBook);
+
     int exit = 0;
     while(!exit){
+    int id = searchContact(addressBook);
+    if(id<0){
+        return;
+    }
     int option=0;
     printf("1. Edit Name\n");
     printf("2. Edit Phone Number\n");
@@ -311,6 +322,7 @@ void editContact(AddressBook *addressBook)
     char name[50];
     char phone[20];
     char email[50];
+
     switch(option){
         case 1:
             do{
@@ -349,5 +361,15 @@ void editContact(AddressBook *addressBook)
 void deleteContact(AddressBook *addressBook)
 {
 	/* Define the logic for deletecontact */
-   
+   int id = searchContact(addressBook);
+   if(id<0)return;
+   printf("Contact '%s' Deleted Successfully",addressBook->contacts[id].name);
+   int new_index=0;
+   for(int i=0;i<addressBook->contactCount;i++){
+    if(i != id){
+        addressBook->contacts[new_index]=addressBook->contacts[i];
+        new_index++;
+    }
+   }
+   addressBook->contactCount=new_index;
 }
