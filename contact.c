@@ -4,16 +4,7 @@
 #include "contact.h"
 #include "file.h"
 #include "populate.h"
-#include<ctype.h>
-int name_is_invalid(const char *name){
-    if(strlen(name)==0) return 1;
-    for(int i=0;i<name[i]!='\0';i++){
-        if(!isalpha(name) && name[i] != ' '){
-            return 1;
-        }
-    }
-    return 0;
-}
+
 void listContacts(AddressBook *addressBook) 
 {
     // Sort contacts based on the chosen criteria
@@ -53,24 +44,7 @@ void saveAndExit(AddressBook *addressBook) {
 void createContact(AddressBook *addressBook)
 {
 	/* Define the logic to create a Contacts */
-    if(addressBook->contactCount>=MAX_CONTACTS){
-        printf("Contact Book is Full");
-        return;
-    }
-    char name[50];
-    char phone[20];
-    char email[50];
-    printf("Enter the Name: ");
-    scanf(" %50[^\n]",name);
-    printf("Enter the Phone Number: ");
-    scanf(" %20[^\n]",phone);
-    printf("Enter Email: ");
-    scanf(" %50[^\n]",email);
-
-    strcpy(addressBook->contacts[addressBook->contactCount].name,name);
-    strcpy(addressBook->contacts[addressBook->contactCount].phone,phone);
-    strcpy(addressBook->contacts[addressBook->contactCount].email,email);
-    addressBook->contactCount += 1;
+    
 }
 
 void searchContact(AddressBook *addressBook) 
