@@ -116,59 +116,59 @@ int search_email_is_invalid(AddressBook* addressBook, char* email){
     return 0;
 }
 void print_contact(AddressBook* addressBook,int contact_num){
+    if(contact_num < 0){
+        return;
+    }
     printf("Name: %s\n",addressBook->contacts[contact_num].name);
     printf("Phone: %s\n",addressBook->contacts[contact_num].phone);
     printf("Email: %s\n",addressBook->contacts[contact_num].email);
 }
-void search(AddressBook* addressBook,char* data,int option){
+int search(AddressBook* addressBook,char* data,int option){
     int count;
-    int i=0;
+    int i=-1;
     switch(option){
         case 1:
             count=0;
             for(int j=0;j<addressBook->contactCount;j++){
                 if(strcmp(data,addressBook->contacts[j].name)==0){
-                    i=j;
+                    return j;
                     count++;
                 }
             }
             if(count==0){
                 printf("Name not matched with any contact\n");
-                return;
             };
             if(count > 1){
                 printf("Found multiple Names. Try search by 'Phone Number' or 'Email'\n");
-                return;
-            }else{
-                print_contact(addressBook,i);
+            }
+            if(count==1){
+                return i;
             }
             break;
         case 2:
-            i=0;
-            for(i=0;i<addressBook->contactCount;i++){
-                if(strcmp(data,addressBook->contacts[i].phone)==0){
-                    print_contact(addressBook,i);
-                    return;
+            for(int j=0;j<addressBook->contactCount;j++){
+                if(strcmp(data,addressBook->contacts[j].phone)==0){
+                    return j;
                 }
             }
             printf("Phone Number not found\n");
+            return i;
             break;
         case 3:
-            i=0;
-            for(i=0;i<addressBook->contactCount;i++){
-                if(strcmp(data,addressBook->contacts[i].email)==0){
-                    print_contact(addressBook,i);
-                    return;
+            for(int j=0;j<addressBook->contactCount;j++){
+                if(strcmp(data,addressBook->contacts[j].email)==0){
+                    return j;
                 }
             }
             printf("Email not found\n");
+            return i;
             break;
         default:
             printf("Option Not Matched\n");
             break; 
     }
+    return i;
 }
-
 
 
 void listContacts(AddressBook *addressBook) 
@@ -265,21 +265,21 @@ void searchContact(AddressBook *addressBook)
                 printf("Enter the Name: ");
                 scanf(" %49[^\n]",name);
             }while(name_is_invalid(name));
-            search(addressBook,name,option);
+            print_contact(addressBook,search(addressBook,name,option));
             break;
         case 2:
             do{
                 printf("Enter the Phone Number: ");
                 scanf(" %19[^\n]",phone);
             }while(search_phone_is_invalid(addressBook,phone));
-            search(addressBook,phone,option);
+            print_contact(addressBook,search(addressBook,phone,option));
             break;
         case 3:
             do{
                 printf("Enter the Email: ");
                 scanf(" %49[^\n]",email);
             }while(search_email_is_invalid(addressBook,email));
-            search(addressBook,email,option);
+            print_contact(addressBook,search(addressBook,email,option));
             break;
         case 4:
             exit = 1;
