@@ -73,7 +73,7 @@ int email_is_invalid(AddressBook* addressBook, char* email){
     }
     return 0;
 }
-int search_phone_is_invalid(AddressBook* addressBook, const char* phone){
+int search_phone_is_invalid(const char* phone){
     // length of the phone number must me 10 digit
     if(strlen(phone) != 10){
         printf("Error: Phone number must be 10 digits.\n");
@@ -88,7 +88,7 @@ int search_phone_is_invalid(AddressBook* addressBook, const char* phone){
     }
     return 0;
 }
-int search_email_is_invalid(AddressBook* addressBook, char* email){
+int search_email_is_invalid(char* email){
     if(strlen(email)==0)return 1;
 
     // check gmail characters consist of only 'a-z,A-Z' , '_' , '@' , '.' only
@@ -236,10 +236,10 @@ void createContact(AddressBook *addressBook)
     strcpy(addressBook->contacts[addressBook->contactCount].phone,phone);
     strcpy(addressBook->contacts[addressBook->contactCount].email,email);
     addressBook->contactCount += 1;
-    printf("Contact '%s' Added Successfully\n",addressBook->contacts[addressBook->contactCount].name);
+    printf("Contact '%s' Added Successfully\n",addressBook->contacts[addressBook->contactCount-1].name);
 }
 
-void searchContact(AddressBook *addressBook) 
+int searchContact(AddressBook *addressBook) 
 {
     int exit=0;
     while(!exit){
@@ -266,21 +266,21 @@ void searchContact(AddressBook *addressBook)
                 scanf(" %49[^\n]",name);
             }while(name_is_invalid(name));
             print_contact(addressBook,search(addressBook,name,option));
-            break;
+            return search(addressBook,name,option);
         case 2:
             do{
                 printf("Enter the Phone Number: ");
                 scanf(" %19[^\n]",phone);
-            }while(search_phone_is_invalid(addressBook,phone));
+            }while(search_phone_is_invalid(phone));
             print_contact(addressBook,search(addressBook,phone,option));
-            break;
+            return search(addressBook,name,option); 
         case 3:
             do{
                 printf("Enter the Email: ");
                 scanf(" %49[^\n]",email);
-            }while(search_email_is_invalid(addressBook,email));
+            }while(search_email_is_invalid(email));
             print_contact(addressBook,search(addressBook,email,option));
-            break;
+            return search(addressBook,name,option); 
         case 4:
             exit = 1;
             break;
@@ -294,7 +294,56 @@ void searchContact(AddressBook *addressBook)
 void editContact(AddressBook *addressBook)
 {
 	/* Define the logic for Editcontact */
-    
+    int id = searchContact(addressBook);
+    int exit = 0;
+    while(!exit){
+    int option=0;
+    printf("1. Edit Name\n");
+    printf("2. Edit Phone Number\n");
+    printf("3. Edit Email\n");
+    printf("4. Exit\n");
+    printf("Select option ->");
+    if(scanf(" %d",&option)!=1){
+        printf("Invalid Option\n");
+        while(getchar() != '\n');
+        continue;
+    }
+    char name[50];
+    char phone[20];
+    char email[50];
+    switch(option){
+        case 1:
+            do{
+                printf("Enter New Name: ");
+                scanf(" %49[^\n]",name);
+            }while(name_is_invalid(name));
+            strcpy(addressBook->contacts[id].name,name);
+            printf("Contact Name '%s' updated Successfully\n",addressBook->contacts[id].name);
+            break;
+        case 2:
+            do{
+                printf("Enter New Phone Number: ");
+                scanf(" %19[^\n]",phone);
+            }while(phone_is_invalid(addressBook,phone));
+            strcpy(addressBook->contacts[id].phone,phone);
+            printf("Contact Phone Number '%s' updated Successfully\n",addressBook->contacts[id].phone);
+            break;
+        case 3:
+            do{
+                printf("Enter New Email: ");
+                scanf(" %49[^\n]",email);
+            }while(email_is_invalid(addressBook,email));
+            strcpy(addressBook->contacts[id].email,email);
+            printf("Contact Email '%s' updated Successfully\n",addressBook->contacts[id].email);
+            break;
+        case 4:
+            exit=1;
+            break;
+        default:
+            printf("Select Valid Option\n");
+            break;
+    }
+    }
 }
 
 void deleteContact(AddressBook *addressBook)
